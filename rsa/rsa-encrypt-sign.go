@@ -20,11 +20,11 @@ func main() {
 	}
 	alicePublicKey := &alicePrivateKey.PublicKey
 
-	trudyPrivateKey, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	// trudyPrivateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	os.Exit(1)
+	// }
 	//trudyPublicKey := &trudyPrivateKey.PublicKey
 
 	bobPrivateKey, err := rsa.GenerateKey(rand.Reader, 2048)
@@ -47,6 +47,7 @@ func main() {
 	label := []byte("")
 	hash := sha256.New()
 
+	// RSA encryption examples
 	ciphertext, err := rsa.EncryptOAEP(
 		hash,
 		rand.Reader,
@@ -63,6 +64,7 @@ func main() {
 	fmt.Printf("OAEP encrypted [%s] to \n[%x]\n", string(message), ciphertext)
 	fmt.Println()
 
+	// Same encryption, but ciphertext2 will be different due to rand.Reader
 	ciphertext2, err := rsa.EncryptOAEP(
 		hash,
 		rand.Reader,
@@ -79,6 +81,7 @@ func main() {
 	fmt.Printf("OAEP encrypted [%s] to \n[%x]\n", string(message), ciphertext2)
 	fmt.Println()
 
+	// Digital signature examples
 	var opts rsa.PSSOptions
 	opts.SaltLength = rsa.PSSSaltLengthAuto // for simple example
 	PSSmessage := message
@@ -89,7 +92,7 @@ func main() {
 	hashed := pssh.Sum(nil)
 	signature, err := rsa.SignPSS(
 		rand.Reader,
-		trudyPrivateKey,
+		alicePrivateKey,
 		newhash,
 		hashed,
 		&opts)
@@ -129,6 +132,6 @@ func main() {
 		fmt.Println("Signature verification failed!")
 		os.Exit(1)
 	} else {
-		fmt.Println("Verify Signature successful!")
+		fmt.Println("Signature verification successful!")
 	}
 }
